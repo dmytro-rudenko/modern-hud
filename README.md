@@ -1,0 +1,65 @@
+# modern-hud
+
+A btop-style instrument panel for the Claude Code status line. It takes every
+reading [claude-hud](https://github.com/jarrodwatts/claude-hud) collects and
+draws it as a grid of framed gauges instead of lines of text.
+
+```
+╭─ MODEL ──────────────────╮╭─ CONTEXT ────────────────╮╭─ USAGE ──────────────────╮╭─ SESSION ────────────────╮╭─ SYSTEM ─────────────────╮
+│ model   Opus 5.5 ◕ xhigh ││ used    ■■■■■■■■■■■  17% ││ 5h      ■■■■■■■■■■■   3% ││ time    16m              ││ ram     ■■■■■■■■■■■  36% │
+│ advisor fable-5-1        ││ tokens  170k / 1M        ││ 7d      ■■■■■■■■■■■  21% ││ cost    $3.53            ││ memory  11 / 31 GB       │
+│ claude  v2.1.294         ││ cache   4m 12s           ││ resets  3h 2m  4d 12h    ││ tokens  3.2M             ││ config  1 CLAUDE.md      │
+╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯
+╭─ PROJECT ────────────────╮╭─ TOOLS ──────────────────╮╭─ SKILLS · MCP ───────────╮╭─ AGENTS ─────────────────╮╭─ TODOS ──────────────────╮
+│ name    my-app           ││ ◐ Edit: layout.ts        ││ skills  plugin-authoring ││ ◐ Explore [haiku] 0m 12s ││ done    ■■■■■■■■■■■  40% │
+│ git     feat/panel* ↑1   ││ ✓ Bash ×18  ✓ Read ×7    ││ mcp     playwright       ││ Finding auth code        ││ ▸ Write the spec         │
+│ dirs    —                ││ ✓ WebSearch ×1           ││                          ││                          ││ left    3 of 5           │
+╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯
+```
+
+In a terminal the gauges are drawn with a rainbow scale.
+
+## Requirements
+
+- Node.js 24.2 or newer (the TypeScript sources run directly, no build step)
+- The [claude-hud](https://github.com/jarrodwatts/claude-hud) plugin installed —
+  modern-hud reuses its data collection and its `config.json`
+- A terminal at least 124 columns wide; on a narrower one the stock claude-hud
+  output is shown instead
+
+## Install
+
+```sh
+git clone https://github.com/dmytro-rudenko/modern-hud.git ~/modern-hud
+```
+
+Then point the status line in `~/.claude/settings.json` at it:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash -c 'cols=$(stty size </dev/tty 2>/dev/null | cut -d\" \" -f2); export COLUMNS=$(( ${cols:-120} - 4 )); exec node \"$HOME/modern-hud/statusline.ts\"'",
+    "refreshInterval": 2
+  }
+}
+```
+
+`refreshInterval` re-runs the panel every 2 seconds so the cache countdown and
+RAM gauge keep moving.
+
+## Behaviour
+
+- Readings switched off in claude-hud's `display` config disappear here too.
+- A panel with no data keeps its frame and shows `—`.
+- Long values wrap; nothing is truncated.
+- If claude-hud changes its internal data shape, modern-hud falls back to the
+  stock claude-hud output and prints `modern-hud: fallback (...)`.
+
+## Development
+
+```sh
+npm install
+npm test
+npm run typecheck
+```
