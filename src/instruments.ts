@@ -38,6 +38,4 @@ export type Instruments = {
   } | null;
   skills: string[] | null;
   mcp: { name: string; failed: boolean }[] | null;
-  agents: { type: string; model: string | null; description: string | null; running: boolean; seconds: number }[] | null;
-  todos: { done: number; total: number; current: string | null } | null;
 };

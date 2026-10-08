@@ -38,7 +38,7 @@ function resets(windows: (UsageWindow | null)[]): Row | null {
 }
 
 export function buildPanels(ins: Instruments): Panel[] {
-  const { model, context, usage, session, system, project, tools, skills, mcp, agents, todos } = ins;
+  const { model, context, usage, session, system, project, tools, skills, mcp } = ins;
   const cache = context.cacheRemainingMs;
   const git = project.git;
   const config = system.config;
@@ -152,27 +152,6 @@ export function buildPanels(ins: Instruments): Panel[] {
           ? ({ kind: 'list', label: 'mcp', items: mcp.map(s => text(s.failed ? `${s.name} ✘` : s.name, s.failed ? COLOR.bad : COLOR.value)) } as Row)
           : null,
       ].filter(present),
-    },
-    {
-      title: 'AGENTS',
-      rows: (agents ?? []).flatMap(agent => [
-        line([
-          agent.running ? ['◐ ', COLOR.run] : ['✓ ', COLOR.ok],
-          [agent.type, agent.running ? COLOR.info : COLOR.value],
-          [`${agent.model ? ` [${agent.model}]` : ''} ${formatSpan(agent.seconds * 1000)}`, COLOR.label],
-        ]),
-        ...(agent.running && agent.description ? [line(text(agent.description))] : []),
-      ]),
-    },
-    {
-      title: 'TODOS',
-      rows: todos
-        ? [
-            meter('done', Math.round((todos.done / todos.total) * 100)),
-            todos.current ? line([['▸ ', COLOR.accent], [todos.current, COLOR.value]]) : null,
-            kv('left', `${todos.total - todos.done} of ${todos.total}`),
-          ].filter(present)
-        : [],
     },
   ];
 

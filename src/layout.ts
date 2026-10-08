@@ -81,11 +81,12 @@ export function renderLines(panels: Panel[], width: number): string[] | null {
   if (width < MIN_WIDTH) return null;
 
   const frame = (text: string): string => paint(text, COLOR.frame);
-  const widths = split(width, GRID_COLUMNS);
   const out: string[] = [];
 
   for (let start = 0; start < panels.length; start += GRID_COLUMNS) {
-    const boxes = panels.slice(start, start + GRID_COLUMNS).map((panel, column) => {
+    const row = panels.slice(start, start + GRID_COLUMNS);
+    const widths = split(width, row.length);
+    const boxes = row.map((panel, column) => {
       const boxWidth = widths[column]!;
       const lines = panel.rows.flatMap(row => rowLines(row, boxWidth - 4));
       return { title: panel.title, width: boxWidth, lines: lines.length > 0 ? lines : [{ text: paint('—', COLOR.label), width: 1 }] };

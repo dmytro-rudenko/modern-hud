@@ -85,8 +85,6 @@ export function toInstruments(input: unknown, extras: { now: number; speed: numb
   }
 
   const mcpErrors = new Set(strings(transcript.mcpErrors ?? [], 'transcript.mcpErrors'));
-  const todos = list(transcript.todos, 'transcript.todos');
-  const agents = list(transcript.agents, 'transcript.agents');
   const cwd = str(stdin.cwd) ?? str(optRec(stdin.workspace).current_dir);
   const addedDirs = optRec(stdin.workspace).added_dirs;
   const effort = [str(ctx.effortSymbol), str(ctx.effortLevel)].filter(Boolean).join(' ');
@@ -163,26 +161,5 @@ export function toInstruments(input: unknown, extras: { now: number; speed: numb
     mcp: shown('showMcp')
       ? strings(transcript.mcpServers, 'transcript.mcpServers').map(name => ({ name, failed: mcpErrors.has(name) }))
       : null,
-    agents: shown('showAgents')
-      ? agents.slice(-3).map(agent => {
-          const start = time(agent.startTime) ?? now;
-          const end = time(agent.endTime) ?? now;
-          return {
-            type: str(agent.type) ?? 'agent',
-            model: str(agent.model),
-            description: str(agent.description),
-            running: agent.status === 'running',
-            seconds: Math.max(0, Math.round((end - start) / 1000)),
-          };
-        })
-      : null,
-    todos:
-      shown('showTodos') && todos.length > 0
-        ? {
-            done: todos.filter(todo => todo.status === 'completed').length,
-            total: todos.length,
-            current: str(todos.find(todo => todo.status === 'in_progress')?.content),
-          }
-        : null,
   };
 }

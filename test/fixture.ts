@@ -22,14 +22,6 @@ export function hudContext(now: number): Record<string, unknown> {
       skills: ['pasadena:sheldon', 'plugin-authoring'],
       mcpServers: ['playwright', 'verbum-dev'],
       mcpErrors: ['verbum-dev'],
-      agents: [
-        { id: 'a', type: 'Explore', model: 'haiku', description: 'Finding auth code', status: 'running', startTime: new Date(now - 12_000) },
-      ],
-      todos: [
-        { content: 'Read code', status: 'completed' },
-        { content: 'Write the spec', status: 'in_progress' },
-        { content: 'Ship', status: 'pending' },
-      ],
       lastAssistantResponseAt: new Date(now - 48_000),
       sessionTokens: { inputTokens: 54, outputTokens: 15_000, cacheCreationTokens: 200_000, cacheReadTokens: 3_000_000 },
       compactionCount: 0,

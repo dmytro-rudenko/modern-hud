@@ -36,8 +36,6 @@ test('adapter maps a claude-hud context to instruments', () => {
     { name: 'playwright', failed: false },
     { name: 'verbum-dev', failed: true },
   ]);
-  assert.deepEqual(ins.todos, { done: 1, total: 3, current: 'Write the spec' });
-  assert.equal(ins.agents?.[0]?.seconds, 12);
 });
 
 test('adapter names the field when the context shape changed', () => {
@@ -48,7 +46,7 @@ test('adapter names the field when the context shape changed', () => {
 test('adapter strips terminal control characters from transcript text', () => {
   const ctx = hudContext(NOW);
   ctx.gitStatus = { branch: 'main\x1b]0;pwned\x07\x1b[2J', isDirty: false, ahead: 0, behind: 0 };
-  ctx.transcript = { ...(ctx.transcript as object), skills: ['ok\x1b[31m'], todos: [{ content: 'do\x9b2Jit', status: 'in_progress' }] };
+  ctx.transcript = { ...(ctx.transcript as object), skills: ['ok\x1b[31m'], tools: [{ name: 'Edit', target: 'do\x9b2Jit', status: 'running' }] };
   const ins = toInstruments(ctx, extras);
   const all = JSON.stringify(ins);
 
@@ -84,7 +82,7 @@ test('long values wrap instead of being cut', () => {
   const branch = 'feature/PROJ-1482-rewrite-statusline-cockpit-layout-engine';
   ctx.gitStatus = { branch, isDirty: false, ahead: 0, behind: 0 };
   const lines = plain(renderLines(buildPanels(toInstruments(ctx, extras)), 120)!);
-  const joined = lines.map(line => line.slice(0, 24).replace(/[│╭╰─╮╯]/g, '').replace(/^\s*(git)?\s*/, '').trimEnd()).join('');
+  const joined = lines.map(line => line.slice(0, 40).replace(/[│╭╰─╮╯]/g, '').replace(/^\s*(git)?\s*/, '').trimEnd()).join('');
 
   assert.ok(!lines.some(line => line.includes('…')));
   assert.ok(joined.includes(branch));
@@ -92,12 +90,13 @@ test('long values wrap instead of being cut', () => {
 
 test('panels without data keep their frame and show a dash', () => {
   const ctx = hudContext(NOW);
-  ctx.transcript = { ...(ctx.transcript as object), agents: [], todos: [], skills: [], mcpServers: [] };
+  ctx.transcript = { ...(ctx.transcript as object), skills: [], mcpServers: [] };
   ctx.usageData = null;
   const lines = plain(renderLines(buildPanels(toInstruments(ctx, extras)), 140)!);
   const titles = lines.filter(line => line.startsWith('╭')).join('');
 
-  for (const title of ['USAGE', 'SKILLS · MCP', 'AGENTS', 'TODOS']) assert.ok(titles.includes(`─ ${title} `));
+  for (const title of ['USAGE', 'SKILLS · MCP']) assert.ok(titles.includes(`─ ${title} `));
+  for (const title of ['AGENTS', 'TODOS']) assert.ok(!titles.includes(title));
   assert.equal(lines.filter(line => /│ —\s+│/.test(line)).length, 2);
 });
 
