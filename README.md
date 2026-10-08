@@ -4,20 +4,7 @@ A btop-style instrument panel for the Claude Code status line. It takes every
 reading [claude-hud](https://github.com/jarrodwatts/claude-hud) collects and
 draws it as a grid of framed gauges instead of lines of text.
 
-```
-╭─ MODEL ──────────────────╮╭─ CONTEXT ────────────────╮╭─ USAGE ──────────────────╮╭─ SESSION ────────────────╮╭─ SYSTEM ─────────────────╮
-│ model   Opus 5.5 ◕ xhigh ││ used    ■■■■■■■■■■■  17% ││ 5h      ■■■■■■■■■■■   3% ││ time    16m              ││ ram     ■■■■■■■■■■■  36% │
-│ advisor fable-5-1        ││ tokens  170k / 1M        ││ 7d      ■■■■■■■■■■■  21% ││ cost    $3.53            ││ memory  11 / 31 GB       │
-│ claude  v2.1.294         ││ cache   4m 12s           ││ resets  3h 2m  4d 12h    ││ tokens  3.2M             ││ config  1 CLAUDE.md      │
-╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯
-╭─ PROJECT ────────────────╮╭─ TOOLS ──────────────────╮╭─ SKILLS · MCP ───────────╮╭─ AGENTS ─────────────────╮╭─ TODOS ──────────────────╮
-│ name    my-app           ││ ◐ Edit: layout.ts        ││ skills  plugin-authoring ││ ◐ Explore [haiku] 0m 12s ││ done    ■■■■■■■■■■■  40% │
-│ git     feat/panel* ↑1   ││ ✓ Bash ×18  ✓ Read ×7    ││ mcp     playwright       ││ Finding auth code        ││ ▸ Write the spec         │
-│ dirs    —                ││ ✓ WebSearch ×1           ││                          ││                          ││ left    3 of 5           │
-╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯╰──────────────────────────╯
-```
-
-In a terminal the gauges are drawn with a rainbow scale.
+![modern-hud panel under the Claude Code prompt](preview.png)
 
 ## Requirements
 
@@ -63,3 +50,7 @@ npm install
 npm test
 npm run typecheck
 ```
+
+## License
+
+[MIT](LICENSE)

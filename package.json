@@ -2,6 +2,7 @@
   "name": "modern-hud",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "btop-style instrument panel for the Claude Code status line, drawn from claude-hud data",
   "engines": { "node": ">=24.2" },
